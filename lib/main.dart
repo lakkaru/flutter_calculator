@@ -43,12 +43,71 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String output = "0";
+
+  String _output = "0";
+  double num1 = 0.0;
+  double num2 = 0.0;
+  String operand = "";
+
+  buttonPressed(String buttonText) {
+    // print(buttonText);
+    if (buttonText == "CLEAR") {
+      _output = "0";
+      num1 = 0.0;
+      num2 = 0.0;
+      operand = "";
+    } else if (buttonText == "+" ||
+        buttonText == "-" ||
+        buttonText == "*" ||
+        buttonText == "/") {
+      num1 = double.parse(output);
+      operand = buttonText;
+      _output = "0";
+    }else if(buttonText=='.'){
+      if(_output.contains(".")){
+        print("Allready contains a decimals");
+        return;
+      }else{
+        _output=_output+buttonText;
+      }
+    }else if(buttonText=="="){
+      num2=double.parse(output);
+      if(operand=="+"){
+        _output=(num1+num2).toString();
+      }
+      if(operand=="-"){
+        _output=(num1-num2).toString();
+      }
+      if(operand=="*"){
+        _output=(num1*num2).toString();
+      }
+      if(operand=="/"){
+        _output=(num1/num2).toString();
+      }
+      num1=num2=0.0;
+      operand="";
+    }else{
+      _output=_output+buttonText;
+    }
+    print(_output);
+
+    setState(() {
+          output=double.parse(_output).toStringAsFixed(2);
+        });
+  }
+
   Widget buildButton(String buttonText) {
     return new Expanded(
       child: new OutlineButton(
         padding: EdgeInsets.all(24.0),
-        child: new Text(buttonText,style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
-        onPressed: () {},
+        child: new Text(
+          buttonText,
+          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+        ),
+        onPressed: () {
+          buttonPressed(buttonText);
+        },
         // color: Colors.blueGrey,
         // textColor: Colors.white,
       ),
@@ -85,17 +144,18 @@ class _MyHomePageState extends State<MyHomePage> {
             child: new Column(
           children: <Widget>[
             Container(
-              padding: EdgeInsets.symmetric(
-                vertical: 24.0,
-                horizontal: 12.0,
-              ),
-              alignment: Alignment.centerRight,
-              child: new Text("0", style: TextStyle(fontSize: 48.0, fontWeight: FontWeight.bold),)
-              ),
+                padding: EdgeInsets.symmetric(
+                  vertical: 24.0,
+                  horizontal: 12.0,
+                ),
+                alignment: Alignment.centerRight,
+                child: new Text(
+                  output,
+                  style: TextStyle(fontSize: 48.0, fontWeight: FontWeight.bold),
+                )),
             Expanded(
               child: Divider(),
             ),
-            
             Column(
               children: <Widget>[
                 Row(
@@ -132,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 Row(
                   children: <Widget>[
-                    buildButton("Clear"),
+                    buildButton("CLEAR"),
                     buildButton("="),
                   ],
                 ),
